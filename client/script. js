@@ -1,0 +1,40 @@
+const API_URL = "http://127.0.0.1:8000";
+
+async function cadastrarCliente() {
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+
+    if (!nome || !email) {
+        alert("Preencha todos os campos");
+        return;
+    }
+
+    await fetch(`${API_URL}/clientes`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ nome, email })
+    });
+
+    document.getElementById("nome").value = "";
+    document.getElementById("email").value = "";
+
+    carregarClientes();
+}
+
+async function carregarClientes() {
+    const response = await fetch(`${API_URL}/clientes`);
+    const clientes = await response.json();
+
+    const lista = document.getElementById("lista-clientes");
+    lista.innerHTML = "";
+
+    clientes.forEach(cliente => {
+        const li = document.createElement("li");
+        li.textContent = `${cliente.nome} - ${cliente.email}`;
+        lista.appendChild(li);
+    });
+}
+
+carregarClientes();
